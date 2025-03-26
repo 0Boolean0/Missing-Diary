@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing Diary Map</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, green, red);
+            color: white;
+        }
+        #map {
+            height: 500px;
+            width: 80%;
+            margin: auto;
+            border: 2px solid white;
+            border-radius: 10px;
+        }
+        #report-form {
+            margin-top: 20px;
+        }
+        input {
+            margin: 5px;
+            padding: 10px;
+            width: 200px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            padding: 10px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Missing Diary - Report Sightings</h1>
+    <div id="map"></div>
+    <div id="report-form">
+        <h2>Report a Missing Person</h2>
+        <input type="text" id="name" placeholder="Person's Name">
+        <input type="text" id="location" placeholder="Last Seen Location (Lat, Lng)">
+        <button onclick="submitReport()">Submit Report</button>
+    </div>
+    <script>
+        var map = L.map('map').setView([23.8103, 90.4125], 10); // Dhaka, Bangladesh
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        function submitReport() {
+            let name = document.getElementById('name').value;
+            let location = document.getElementById('location').value;
+            
+            if (name && location) {
+                let coords = location.split(',');
+                let lat = parseFloat(coords[0].trim());
+                let lng = parseFloat(coords[1].trim());
+                
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    L.marker([lat, lng]).addTo(map)
+                        .bindPopup(`<b>${name}</b><br>Last seen here.`)
+                        .openPopup();
+                    
+                    alert(`Report Submitted for ${name} at (${lat}, ${lng})`);
+                } else {
+                    alert('Invalid location format. Use: Lat, Lng');
+                }
+                
+                document.getElementById('name').value = '';
+                document.getElementById('location').value = '';
+            } else {
+                alert('Please fill all fields.');
+            }
+        }
+    </script>
+</body>
+</html>
